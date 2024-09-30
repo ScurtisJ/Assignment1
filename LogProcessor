@@ -1,0 +1,69 @@
+import java.io.*;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Stack;
+
+public class LogProcessor {
+
+    public static void main(String[] args) {
+        try {
+            File file = new File("src/log-data.csv");
+            processLogs(file);
+            analyzeLogs(file);
+        } catch (IOException e) {
+            System.out.println("An error occurred while processing the file.");
+            e.printStackTrace();
+        }
+    }
+
+    private static void processLogs(File file) throws IOException {
+        Queue<String> logQueue = new LinkedList<>();
+        Stack<String> errorStack = new Stack<>();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        String logEntry;
+        while ((logEntry = reader.readLine()) != null) {
+            logQueue.add(logEntry);
+            if (logEntry.contains("ERROR")) {
+                errorStack.push(logEntry);
+            }
+        }
+        reader.close();
+
+        while (!logQueue.isEmpty()) {
+            logQueue.remove();
+          }
+
+        System.out.println("Last 100 error log entries:");
+        int count = 0;
+        while (!errorStack.isEmpty() && count < 100) {
+            System.out.println(errorStack.pop());
+            count++;
+        }
+    }
+
+    private static void analyzeLogs(File file) throws IOException {
+        int infoCount = 0, warnCount = 0, errorCount = 0, memoryWarnings = 0;
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        String logEntry;
+        while ((logEntry = reader.readLine()) != null) {
+            if (logEntry.contains("INFO")) {
+                infoCount++;
+            } else if (logEntry.contains("WARN")) {
+                warnCount++;
+                if (logEntry.contains("Memory")) {
+                    memoryWarnings++;
+                }
+            } else if (logEntry.contains("ERROR")) {
+                errorCount++;
+            }
+        }
+        reader.close();
+
+        System.out.println("Info log entries: " + infoCount);
+        System.out.println("Warn log entries: " + warnCount);
+        System.out.println("Error log entries: " + errorCount);
+        System.out.println("Memory warnings: " + memoryWarnings);
+    }
+}
