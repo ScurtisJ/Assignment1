@@ -7,7 +7,7 @@ public class LogProcessor {
 
     public static void main(String[] args) {
         try {
-            File file = new File("src/log-data.csv");
+            File file = new File("src/log-data.csv"); //I added src/ here because I needed reference it when coding in IntelliJ.
             processLogs(file);
             analyzeLogs(file);
         } catch (IOException e) {
